@@ -389,6 +389,7 @@
             font-size: 3.5em;
             margin-bottom: 30px;
             font-weight: 700;
+            line-height: 1.3;
         }
 
         .neon-text {
@@ -1115,25 +1116,7 @@
         window.addEventListener('scroll', checkScroll);
         window.addEventListener('load', checkScroll);
 
-        // Добавляем эффект печатания для заголовка
-        const heroTitle = document.querySelector('.hero-title');
-        const originalText = heroTitle.innerHTML;
-
-        function typeWriterEffect() {
-            heroTitle.innerHTML = '';
-            let i = 0;
-            const typing = setInterval(() => {
-                if (i < originalText.length) {
-                    heroTitle.innerHTML += originalText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typing);
-                }
-            }, 50);
-        }
-
-        // Запускаем эффект при загрузке
-        window.addEventListener('load', typeWriterEffect);
+        // Убрана анимация печатания для заголовка
 
         // Добавляем случайные неоновые вспышки
         function createFlash() {
