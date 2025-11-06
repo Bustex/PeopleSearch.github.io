@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People Search - Найди своего мамонта!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #b967ff;
+            --neon-green: #00ff88;
+            --christmas-red: #ff4d4d;
+            --christmas-green: #4dff88;
+            --christmas-gold: #ffd700;
+            --dark-bg: #0a0a1a;
+            --darker-bg: #050510;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: var(--darker-bg);
+            font-family: 'Rajdhani', sans-serif;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 18px;
+        }
+
+        /* Гамбургер-меню */
+        .menu-toggle {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Боковое меню */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(10, 10, 26, 0.95) 0%, rgba(5, 5, 16, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border);
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            padding: 100px 25px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        /* Крутые кнопки меню */
+        .menu-btn {
+            position: relative;
+            padding: 18px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-align: left;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .menu-btn:hover::before {
+            left: 100%;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .menu-btn.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.5);
+        }
+
+        .menu-btn.active:hover {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.7);
+        }
+
+        /* Иконки для кнопок */
+        .menu-btn::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3em;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-btn[data-tab="home"]::after {
+            content: '🏠';
+        }
+
+        .menu-btn[data-tab="support"]::after {
+            content: '💎';
+        }
+
+        .menu-btn:hover::after {
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        /* Оверлей для меню */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Вкладки */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Анимированный фон */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+
+        .star:nth-child(1) { top: 10%; left: 20%; width: 2px; height: 2px; animation-delay: 0s; }
+        .star:nth-child(2) { top: 60%; left: 80%; width: 3px; height: 3px; animation-delay: 1s; }
+        .star:nth-child(3) { top: 30%; left: 50%; width: 2px; height: 2px; animation-delay: 2s; }
+        .star:nth-child(4) { top: 80%; left: 30%; width: 3px; height: 3px; animation-delay: 3s; }
+        .star:nth-child(5) { top: 40%; left: 90%; width: 2px; height: 2px; animation-delay: 4s; }
+
+        /* Снежинки */
+        .snowflake {
+            position: absolute;
+            color: white;
+            font-size: 1.2em;
+            animation: snowfall linear infinite;
+            opacity: 0.8;
+            text-shadow: 0 0 5px var(--neon-blue);
+            z-index: 1;
+            user-select: none;
+        }
+
+        @keyframes snowfall {
+            0% { transform: translateY(-10px) translateX(0) rotate(0deg); }
+            100% { transform: translateY(100vh) translateX(20px) rotate(360deg); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 50px 0;
+            position: relative;
+        }
+
+        .header::before {
+            content: "🎄";
+            position: absolute;
+            left: 20%;
+            top: 20px;
+            font-size: 2.5em;
+            animation: swing 3s ease-in-out infinite;
+        }
+
+        .header::after {
+            content: "🎁";
+            position: absolute;
+            right: 20%;
+            top: 20px;
+            font-size: 2.5em;
+            animation: swing 3s ease-in-out infinite reverse;
+        }
+
+        @keyframes swing {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5em;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--neon-blue), var(--christmas-green));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            background: linear-gradient(45deg, var(--christmas-red), var(--neon-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.5em;
+            opacity: 0.8;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 70px 0;
+        }
+
+        .mammoth-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        .mammoth {
+            font-size: 10em;
+            filter: drop-shadow(0 0 20px var(--neon-blue));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .santa-hat {
+            position: absolute;
+            top: -30px;
+            right: 20px;
+            font-size: 2.5em;
+            animation: hatBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes hatBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+        }
+
+        .pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            border: 2px solid var(--christmas-red);
+            border-radius: 50%;
+            animation: pulse 2s ease-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0% { 
+                width: 150px; 
+                height: 150px; 
+                opacity: 1; 
+            }
+            100% { 
+                width: 350px; 
+                height: 350px; 
+                opacity: 0; 
+            }
+        }
+
+        .hero-title {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .neon-text {
+            background: linear-gradient(45deg, var(--christmas-red), var(--christmas-green));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--christmas-red);
+        }
+
+        .hero-description {
+            font-size: 1.6em;
+            max-width: 700px;
+            margin: 0 auto 50px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Кнопки */
+        .cta-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .neon-btn {
+            padding: 20px 40px;
+            font-size: 1.3em;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .telegram-btn {
+            background: linear-gradient(45deg, #0088cc, #00aced);
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 136, 204, 0.8);
+        }
+
+        .features-btn {
+            background: transparent;
+            color: var(--neon-purple);
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 20px rgba(185, 103, 255, 0.5);
+        }
+
+        .features-btn:hover {
+            background: var(--neon-purple);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(185, 103, 255, 0.8);
+        }
+
+        .stats-btn {
+            background: transparent;
+            color: var(--christmas-gold);
+            border: 2px solid var(--christmas-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .stats-btn:hover {
+            background: var(--christmas-gold);
+            color: var(--darker-bg);
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin: 100px 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .features.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+        }
+
+        .feature-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: var(--neon-blue);
+        }
+
+        /* How it works */
+        .how-it-works {
+            margin: 100px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 3em;
+            margin-bottom: 60px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .step {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 25px;
+            position: relative;
+        }
+
+        .step-number {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, var(--christmas-red), var(--christmas-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px var(--christmas-red);
+        }
+
+        /* Статистика */
+        .stats-section {
+            margin: 100px 0;
+            text-align: center;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 3.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--neon-blue), var(--christmas-green));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            font-size: 1.4em;
+            opacity: 0.9;
+        }
+
+        .seasonal-stats {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 50px;
+            border: 1px solid var(--christmas-red);
+            text-align: center;
+        }
+
+        .seasonal-stats h3 {
+            color: var(--christmas-gold);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-top: 25px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--christmas-red), var(--christmas-green));
+            border-radius: 15px;
+            animation: progressFill 2s ease-out;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: "75%";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-size: 0.9em;
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: 75%; }
+        }
+
+        /* Поддержка */
+        .support-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .support-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 50px;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .support-card h3 {
+            color: var(--neon-blue);
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .support-list {
+            list-style: none;
+            font-size: 1.3em;
+            line-height: 1.8;
+        }
+
+        .support-list li {
+            margin-bottom: 20px;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .support-list li::before {
+            content: "🎯";
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1.2em;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: "🎅";
+            position: absolute;
+            left: 10%;
+            bottom: 30px;
+            font-size: 2.5em;
+            animation: swing 4s ease-in-out infinite;
+        }
+
+        .footer::after {
+            content: "🦌";
+            position: absolute;
+            right: 10%;
+            bottom: 30px;
+            font-size: 2.5em;
+            animation: swing 4s ease-in-out infinite reverse;
+        }
+
+        .footer-text {
+            opacity: 0.7;
+            margin-bottom: 25px;
+            font-size: 1.2em;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .social-link {
+            color: var(--neon-blue);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .social-link:hover {
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 3em;
+            }
+            
+            .hero-title {
+                font-size: 2.5em;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .neon-btn {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .mammoth {
+                font-size: 6em;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header::before, .header::after {
+                display: none;
+            }
+            
+            .footer::before, .footer::after {
+                display: none;
+            }
+            
+            .side-menu {
+                width: 280px;
+            }
+        }
+
+        @keyframes flash {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Гамбургер-меню -->
+    <div class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Боковое меню -->
+    <div class="side-menu" id="sideMenu">
+        <button class="menu-btn active" data-tab="home">Главная</button>
+        <button class="menu-btn" data-tab="support">Поддержка проекта</button>
+    </div>
+
+    <!-- Оверлей для меню -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <!-- Анимированный фон -->
+        <div class="bg-animation">
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+        </div>
+
+        <header class="header">
+            <h1 class="logo">People<span>Search</span></h1>
+            <p class="tagline">Бот для поиска мамонтов 🦣</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Главная страница -->
+            <div class="tab-content active" id="home">
+                <div class="hero">
+                    <div class="mammoth-container">
+                        <div class="mammoth">🦣</div>
+                        <div class="pulse"></div>
+                        <div class="santa-hat">🎅</div>
+                    </div>
+                    
+                    <h2 class="hero-title">
+                        Найди своего <span class="neon-text">мамонта</span><br>
+                        в цифровом мире!
+                    </h2>
+                    
+                    <p class="hero-description">
+                        People Search - это мощный Telegram бот, который поможет тебе найти 
+                        нужных людей, восстановить связи и откопать настоящих мамонтов 
+                        в океане информации!
+                    </p>
+
+                    <div class="cta-buttons">
+                        <a href="https://t.me/your_bot_username" class="neon-btn telegram-btn">
+                            <span>🚀 Запустить бота</span>
+                        </a>
+                        <button class="neon-btn features-btn" id="featuresBtn">
+                            <span>✨ Возможности</span>
+                        </button>
+                        <button class="neon-btn stats-btn" id="statsScrollBtn">
+                            <span>📊 Статистика</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="features" id="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Глубокий поиск</h3>
+                        <p>Находи людей по различным параметрам и критериям</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🕵️</div>
+                        <h3>Анонимность</h3>
+                        <p>Твои поиски остаются полностью конфиденциальными</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Мгновенные результаты</h3>
+                        <p>Получай информацию в режиме реального времени</p>
+                    </div>
+                </div>
+
+                <div class="how-it-works">
+                    <h2 class="section-title">Как это работает?</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <p>Запускаешь бота в Telegram</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <p>Вводишь данные для поиска</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <p>Получаешь точные результаты</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <p>Находишь своего мамонта! 🦣</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Секция статистики -->
+                <div class="stats-section" id="statsSection">
+                    <h2 class="section-title">📊 Наша статистика</h2>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-value">1,254</div>
+                            <div class="stat-label">Найдено мамонтов</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3,892</div>
+                            <div class="stat-label">Выполнено поисков</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">98%</div>
+                            <div class="stat-label">Успешных поисков</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">24/7</div>
+                            <div class="stat-label">Работаем без выходных</div>
+                        </div>
+                    </div>
+                    <div class="seasonal-stats">
+                        <h3>🎅 Сезонная статистика</h3>
+                        <p>В праздничный сезон найдено на 40% больше мамонтов!</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Поддержка проекта -->
+            <div class="tab-content" id="support">
+                <div class="hero">
+                    <h2 class="hero-title">
+                        Поддержка <span class="neon-text">проекта</span>
+                    </h2>
+                    
+                    <p class="hero-description">
+                        Ваша поддержка помогает нам развивать бота и добавлять новые функции!
+                    </p>
+                </div>
+
+                <div class="support-content">
+                    <div class="support-card">
+                        <h3>Способы поддержки</h3>
+                        <ul class="support-list">
+                            <li><strong>Финансовая поддержка:</strong> Помогите покрыть расходы на сервера и разработку</li>
+                            <li><strong>Идеи и предложения:</strong> Расскажите, какие функции хотели бы видеть в боте</li>
+                            <li><strong>Распространение:</strong> Поделитесь информацией о боте с друзьями</li>
+                            <li><strong>Обратная связь:</strong> Сообщайте об ошибках и помогайте улучшать бота</li>
+                        </ul>
+                    </div>
+
+                    <div class="support-card">
+                        <h3>Контакты для связи</h3>
+                        <ul class="support-list">
+                            <li><strong>Telegram канал:</strong> @peoplesearch_updates</li>
+                            <li><strong>Поддержка:</strong> @peoplesearch_support</li>
+                            <li><strong>Email:</strong> support@peoplesearch.com</li>
+                            <li><strong>GitHub:</strong> github.com/peoplesearch</li>
+                        </ul>
+                    </div>
+
+                    <div class="cta-buttons">
+                        <a href="https://t.me/peoplesearch_support" class="neon-btn telegram-btn">
+                            <span>💬 Написать в поддержку</span>
+                        </a>
+                        <a href="#" class="neon-btn features-btn">
+                            <span>💳 Поддержать проект</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p class="footer-text">
+                &copy; 2024 People Search Bot. Находи мамонтов с умом!
+            </p>
+            <div class="social-links">
+                <a href="#" class="social-link">📢 Канал</a>
+                <a href="#" class="social-link">💬 Поддержка</a>
+                <a href="#" class="social-link">📚 FAQ</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Создаем снежинки
+        function createSnowflakes() {
+            const snowContainer = document.querySelector('.bg-animation');
+            const snowflakesCount = 50;
+            
+            for (let i = 0; i < snowflakesCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = '❄';
+                
+                const size = Math.random() * 1.5 + 0.5;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 10 + 5;
+                const animationDelay = Math.random() * 5;
+                
+                snowflake.style.fontSize = `${size}em`;
+                snowflake.style.left = `${left}%`;
+                snowflake.style.animationDuration = `${animationDuration}s`;
+                snowflake.style.animationDelay = `${animationDelay}s`;
+                
+                snowContainer.appendChild(snowflake);
+            }
+        }
+
+        // Гамбургер-меню
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuButtons = document.querySelectorAll('.menu-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Открытие/закрытие меню
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            sideMenu.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        });
+
+        // Закрытие меню по клику на оверлей
+        menuOverlay.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            sideMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+
+        // Навигация по вкладкам
+        menuButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Убираем активный класс у всех кнопок и вкладок
+                menuButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Добавляем активный класс текущей кнопке и вкладке
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+                
+                // Закрываем меню после выбора
+                menuToggle.classList.remove('active');
+                sideMenu.classList.remove('active');
+                menuOverlay.classList.remove('active');
+            });
+        });
+
+        // Плавное появление features при скролле
+        const featuresSection = document.getElementById('features');
+        const featuresBtn = document.getElementById('featuresBtn');
+        const statsScrollBtn = document.getElementById('statsScrollBtn');
+        const statsSection = document.getElementById('statsSection');
+
+        function checkScroll() {
+            const sectionPos = featuresSection.getBoundingClientRect().top;
+            const screenPos = window.innerHeight / 1.3;
+
+            if (sectionPos < screenPos) {
+                featuresSection.classList.add('show');
+            }
+        }
+
+        // Показать features при клике на кнопку
+        featuresBtn.addEventListener('click', function() {
+            featuresSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+            
+            setTimeout(() => {
+                featuresSection.classList.add('show');
+            }, 500);
+        });
+
+        // Прокрутка к статистике
+        statsScrollBtn.addEventListener('click', function() {
+            statsSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+        });
+
+        // Проверять скролл при загрузке и скролле
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('load', checkScroll);
+
+        // Добавляем эффект печатания для заголовка
+        const heroTitle = document.querySelector('.hero-title');
+        const originalText = heroTitle.innerHTML;
+
+        function typeWriterEffect() {
+            heroTitle.innerHTML = '';
+            let i = 0;
+            const typing = setInterval(() => {
+                if (i < originalText.length) {
+                    heroTitle.innerHTML += originalText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typing);
+                }
+            }, 50);
+        }
+
+        // Запускаем эффект при загрузке
+        window.addEventListener('load', typeWriterEffect);
+
+        // Добавляем случайные неоновые вспышки
+        function createFlash() {
+            const flash = document.createElement('div');
+            flash.style.cssText = `
+                position: fixed;
+                width: 100px;
+                height: 100px;
+                background: radial-gradient(circle, var(--neon-blue), transparent);
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0;
+                animation: flash 2s ease-out;
+                z-index: 0;
+            `;
+            
+            flash.style.left = Math.random() * 100 + 'vw';
+            flash.style.top = Math.random() * 100 + 'vh';
+            
+            document.body.appendChild(flash);
+            
+            setTimeout(() => {
+                flash.remove();
+            }, 2000);
+        }
+
+        // Создаем вспышки каждые 3 секунды
+        setInterval(createFlash, 3000);
+
+        // Новогодние эффекты
+        function createChristmasEffect() {
+            const effects = ['🎄', '🎁', '⭐', '🔴', '🟢'];
+            const effect = document.createElement('div');
+            effect.textContent = effects[Math.floor(Math.random() * effects.length)];
+            effect.style.cssText = `
+                position: fixed;
+                font-size: ${Math.random() * 20 + 10}px;
+                pointer-events: none;
+                z-index: 1;
+                opacity: 0;
+                animation: christmasFloat 5s ease-in forwards;
+            `;
+            
+            effect.style.left = Math.random() * 100 + 'vw';
+            effect.style.top = '100vh';
+            
+            document.body.appendChild(effect);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 5000);
+        }
+
+        // Создаем новогодние эффекты каждые 2 секунды
+        setInterval(createChristmasEffect, 2000);
+
+        // Добавляем CSS для анимации новогодних эффектов
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes christmasFloat {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 0.8;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Создаем снежинки при загрузке
+        window.addEventListener('load', createSnowflakes);
+    </script>
+</body>
+</html>
