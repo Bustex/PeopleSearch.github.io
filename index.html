@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="People Search - мощный Telegram бот для поиска людей">
     <title>People Search - Найди своего мамонта!</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS оптимизации */
         * {
             margin: 0;
             padding: 0;
@@ -32,9 +34,10 @@
             min-height: 100vh;
             overflow-x: hidden;
             font-size: 18px;
+            line-height: 1.6;
         }
 
-        /* Гамбургер-меню */
+        /* Улучшенное гамбургер-меню */
         .menu-toggle {
             position: fixed;
             top: 25px;
@@ -53,6 +56,7 @@
             z-index: 1001;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 0;
         }
 
         .menu-toggle:hover {
@@ -101,13 +105,14 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            will-change: transform;
         }
 
         .side-menu.active {
             right: 0;
         }
 
-        /* Крутые кнопки меню */
+        /* Кнопки меню */
         .menu-btn {
             position: relative;
             padding: 18px 25px;
@@ -221,6 +226,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            pointer-events: none;
         }
 
         .star {
@@ -246,6 +252,7 @@
             text-shadow: 0 0 5px var(--neon-blue);
             z-index: 1;
             user-select: none;
+            pointer-events: none;
         }
 
         @keyframes snowfall {
@@ -296,7 +303,7 @@
 
         .logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 5em;
+            font-size: clamp(2.5em, 8vw, 5em);
             font-weight: 900;
             background: linear-gradient(45deg, var(--neon-blue), var(--christmas-green));
             background-clip: text;
@@ -304,6 +311,7 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
             margin-bottom: 20px;
+            line-height: 1.2;
         }
 
         .logo span {
@@ -314,7 +322,7 @@
         }
 
         .tagline {
-            font-size: 1.5em;
+            font-size: clamp(1.2em, 4vw, 1.5em);
             opacity: 0.8;
             text-shadow: 0 0 10px var(--neon-blue);
         }
@@ -337,7 +345,7 @@
         }
 
         .mammoth {
-            font-size: 10em;
+            font-size: clamp(4em, 15vw, 10em);
             filter: drop-shadow(0 0 20px var(--neon-blue));
             animation: float 3s ease-in-out infinite;
         }
@@ -346,7 +354,7 @@
             position: absolute;
             top: -30px;
             right: 20px;
-            font-size: 2.5em;
+            font-size: clamp(1.5em, 5vw, 2.5em);
             animation: hatBounce 2s ease-in-out infinite;
         }
 
@@ -386,7 +394,7 @@
         }
 
         .hero-title {
-            font-size: 3.5em;
+            font-size: clamp(2em, 6vw, 3.5em);
             margin-bottom: 30px;
             font-weight: 700;
             line-height: 1.3;
@@ -401,7 +409,7 @@
         }
 
         .hero-description {
-            font-size: 1.6em;
+            font-size: clamp(1.2em, 3vw, 1.6em);
             max-width: 700px;
             margin: 0 auto 50px;
             opacity: 0.9;
@@ -418,7 +426,7 @@
 
         .neon-btn {
             padding: 20px 40px;
-            font-size: 1.3em;
+            font-size: clamp(1em, 3vw, 1.3em);
             font-weight: 600;
             border: none;
             border-radius: 50px;
@@ -430,6 +438,7 @@
             display: inline-block;
             text-align: center;
             font-family: 'Rajdhani', sans-serif;
+            min-width: 200px;
         }
 
         .telegram-btn {
@@ -521,13 +530,13 @@
         }
 
         .feature-icon {
-            font-size: 4em;
+            font-size: clamp(2.5em, 8vw, 4em);
             margin-bottom: 20px;
             filter: drop-shadow(0 0 10px var(--neon-blue));
         }
 
         .feature-card h3 {
-            font-size: 1.8em;
+            font-size: clamp(1.4em, 4vw, 1.8em);
             margin-bottom: 15px;
             color: var(--neon-blue);
         }
@@ -539,7 +548,7 @@
         }
 
         .section-title {
-            font-size: 3em;
+            font-size: clamp(2em, 6vw, 3em);
             margin-bottom: 60px;
             background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
             background-clip: text;
@@ -606,7 +615,7 @@
         }
 
         .stat-value {
-            font-size: 3.5em;
+            font-size: clamp(2.5em, 6vw, 3.5em);
             font-weight: bold;
             background: linear-gradient(45deg, var(--neon-blue), var(--christmas-green));
             background-clip: text;
@@ -616,7 +625,7 @@
         }
 
         .stat-label {
-            font-size: 1.4em;
+            font-size: clamp(1.1em, 3vw, 1.4em);
             opacity: 0.9;
         }
 
@@ -750,6 +759,7 @@
             display: flex;
             justify-content: center;
             gap: 25px;
+            flex-wrap: wrap;
         }
 
         .social-link {
@@ -769,14 +779,6 @@
                 padding: 20px;
             }
             
-            .logo {
-                font-size: 3em;
-            }
-            
-            .hero-title {
-                font-size: 2.5em;
-            }
-            
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
@@ -785,14 +787,6 @@
             .neon-btn {
                 width: 100%;
                 max-width: 350px;
-            }
-            
-            .mammoth {
-                font-size: 6em;
-            }
-            
-            .stats-container {
-                grid-template-columns: 1fr;
             }
             
             .header::before, .header::after {
@@ -806,6 +800,39 @@
             .side-menu {
                 width: 280px;
             }
+            
+            .support-card {
+                padding: 30px 20px;
+            }
+            
+            .support-list {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .hero {
+                padding: 40px 0;
+            }
+            
+            .feature-card, .step, .stat-card {
+                padding: 25px 15px;
+            }
+            
+            .steps, .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-toggle {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
         }
 
         @keyframes flash {
@@ -817,24 +844,24 @@
 </head>
 <body>
     <!-- Гамбургер-меню -->
-    <div class="menu-toggle" id="menuToggle">
+    <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">
         <span></span>
         <span></span>
         <span></span>
-    </div>
+    </button>
 
     <!-- Боковое меню -->
-    <div class="side-menu" id="sideMenu">
+    <nav class="side-menu" id="sideMenu" aria-label="Основная навигация">
         <button class="menu-btn active" data-tab="home">Главная</button>
         <button class="menu-btn" data-tab="support">Поддержка проекта</button>
-    </div>
+    </nav>
 
     <!-- Оверлей для меню -->
     <div class="menu-overlay" id="menuOverlay"></div>
 
     <div class="container">
         <!-- Анимированный фон -->
-        <div class="bg-animation">
+        <div class="bg-animation" aria-hidden="true">
             <div class="star"></div>
             <div class="star"></div>
             <div class="star"></div>
@@ -849,12 +876,12 @@
 
         <main class="main-content">
             <!-- Главная страница -->
-            <div class="tab-content active" id="home">
+            <section class="tab-content active" id="home">
                 <div class="hero">
                     <div class="mammoth-container">
-                        <div class="mammoth">🦣</div>
-                        <div class="pulse"></div>
-                        <div class="santa-hat">🎅</div>
+                        <div class="mammoth" aria-label="Мамонт">🦣</div>
+                        <div class="pulse" aria-hidden="true"></div>
+                        <div class="santa-hat" aria-hidden="true">🎅</div>
                     </div>
                     
                     <h2 class="hero-title">
@@ -879,7 +906,7 @@
                     </div>
                 </div>
 
-                <div class="features" id="features">
+                <section class="features" id="features">
                     <div class="feature-card">
                         <div class="feature-icon">🔍</div>
                         <h3>Глубокий поиск</h3>
@@ -897,9 +924,9 @@
                         <h3>Мгновенные результаты</h3>
                         <p>Находит людей за считаные секунды</p>
                     </div>
-                </div>
+                </section>
 
-                <div class="how-it-works">
+                <section class="how-it-works">
                     <h2 class="section-title">Как это работает?</h2>
                     <div class="steps">
                         <div class="step">
@@ -919,10 +946,10 @@
                             <p>Пишешь им. И обманываешь на гифты. Обманул = он🦣🦣🦣</p>
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <!-- Секция статистики -->
-                <div class="stats-section" id="statsSection">
+                <section class="stats-section" id="statsSection">
                     <h2 class="section-title">📊 Наша статистика</h2>
                     <div class="stats-container">
                         <div class="stat-card">
@@ -949,11 +976,11 @@
                             <div class="progress-fill"></div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
+            </section>
 
             <!-- Поддержка проекта -->
-            <div class="tab-content" id="support">
+            <section class="tab-content" id="support">
                 <div class="hero">
                     <h2 class="hero-title">
                         Поддержка <span class="neon-text">проекта</span>
@@ -992,7 +1019,7 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </section>
         </main>
 
         <footer class="footer">
@@ -1008,185 +1035,196 @@
     </div>
 
     <script>
-        // Создаем снежинки
-        function createSnowflakes() {
-            const snowContainer = document.querySelector('.bg-animation');
-            const snowflakesCount = 50;
-            
-            for (let i = 0; i < snowflakesCount; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                snowflake.innerHTML = '❄';
+        // Оптимизированный JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Создаем снежинки
+            function createSnowflakes() {
+                const snowContainer = document.querySelector('.bg-animation');
+                const snowflakesCount = 30; // Уменьшено для производительности
                 
-                const size = Math.random() * 1.5 + 0.5;
-                const left = Math.random() * 100;
-                const animationDuration = Math.random() * 10 + 5;
-                const animationDelay = Math.random() * 5;
-                
-                snowflake.style.fontSize = `${size}em`;
-                snowflake.style.left = `${left}%`;
-                snowflake.style.animationDuration = `${animationDuration}s`;
-                snowflake.style.animationDelay = `${animationDelay}s`;
-                
-                snowContainer.appendChild(snowflake);
-            }
-        }
-
-        // Гамбургер-меню
-        const menuToggle = document.getElementById('menuToggle');
-        const sideMenu = document.getElementById('sideMenu');
-        const menuOverlay = document.getElementById('menuOverlay');
-        const menuButtons = document.querySelectorAll('.menu-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        // Открытие/закрытие меню
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            sideMenu.classList.toggle('active');
-            menuOverlay.classList.toggle('active');
-        });
-
-        // Закрытие меню по клику на оверлей
-        menuOverlay.addEventListener('click', () => {
-            menuToggle.classList.remove('active');
-            sideMenu.classList.remove('active');
-            menuOverlay.classList.remove('active');
-        });
-
-        // Навигация по вкладкам
-        menuButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                
-                // Убираем активный класс у всех кнопок и вкладок
-                menuButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                // Добавляем активный класс текущей кнопке и вкладке
-                button.classList.add('active');
-                document.getElementById(tabId).classList.add('active');
-                
-                // Закрываем меню после выбора
-                menuToggle.classList.remove('active');
-                sideMenu.classList.remove('active');
-                menuOverlay.classList.remove('active');
-            });
-        });
-
-        // Плавное появление features при скролле
-        const featuresSection = document.getElementById('features');
-        const featuresBtn = document.getElementById('featuresBtn');
-        const statsScrollBtn = document.getElementById('statsScrollBtn');
-        const statsSection = document.getElementById('statsSection');
-
-        function checkScroll() {
-            const sectionPos = featuresSection.getBoundingClientRect().top;
-            const screenPos = window.innerHeight / 1.3;
-
-            if (sectionPos < screenPos) {
-                featuresSection.classList.add('show');
-            }
-        }
-
-        // Показать features при клике на кнопку
-        featuresBtn.addEventListener('click', function() {
-            featuresSection.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'center'
-            });
-            
-            setTimeout(() => {
-                featuresSection.classList.add('show');
-            }, 500);
-        });
-
-        // Прокрутка к статистике
-        statsScrollBtn.addEventListener('click', function() {
-            statsSection.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'center'
-            });
-        });
-
-        // Проверять скролл при загрузке и скролле
-        window.addEventListener('scroll', checkScroll);
-        window.addEventListener('load', checkScroll);
-
-        // Убрана анимация печатания для заголовка
-
-        // Добавляем случайные неоновые вспышки
-        function createFlash() {
-            const flash = document.createElement('div');
-            flash.style.cssText = `
-                position: fixed;
-                width: 100px;
-                height: 100px;
-                background: radial-gradient(circle, var(--neon-blue), transparent);
-                border-radius: 50%;
-                pointer-events: none;
-                opacity: 0;
-                animation: flash 2s ease-out;
-                z-index: 0;
-            `;
-            
-            flash.style.left = Math.random() * 100 + 'vw';
-            flash.style.top = Math.random() * 100 + 'vh';
-            
-            document.body.appendChild(flash);
-            
-            setTimeout(() => {
-                flash.remove();
-            }, 2000);
-        }
-
-        // Создаем вспышки каждые 3 секунды
-        setInterval(createFlash, 3000);
-
-        // Новогодние эффекты
-        function createChristmasEffect() {
-            const effects = ['🎄', '🎁', '⭐', '🔴', '🟢'];
-            const effect = document.createElement('div');
-            effect.textContent = effects[Math.floor(Math.random() * effects.length)];
-            effect.style.cssText = `
-                position: fixed;
-                font-size: ${Math.random() * 20 + 10}px;
-                pointer-events: none;
-                z-index: 1;
-                opacity: 0;
-                animation: christmasFloat 5s ease-in forwards;
-            `;
-            
-            effect.style.left = Math.random() * 100 + 'vw';
-            effect.style.top = '100vh';
-            
-            document.body.appendChild(effect);
-            
-            setTimeout(() => {
-                effect.remove();
-            }, 5000);
-        }
-
-        // Создаем новогодние эффекты каждые 2 секунды
-        setInterval(createChristmasEffect, 2000);
-
-        // Добавляем CSS для анимации новогодних эффектов
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes christmasFloat {
-                0% {
-                    transform: translateY(0) rotate(0deg);
-                    opacity: 0.8;
+                for (let i = 0; i < snowflakesCount; i++) {
+                    const snowflake = document.createElement('div');
+                    snowflake.className = 'snowflake';
+                    snowflake.innerHTML = '❄';
+                    snowflake.setAttribute('aria-hidden', 'true');
+                    
+                    const size = Math.random() * 1.5 + 0.5;
+                    const left = Math.random() * 100;
+                    const animationDuration = Math.random() * 10 + 5;
+                    const animationDelay = Math.random() * 5;
+                    
+                    snowflake.style.fontSize = `${size}em`;
+                    snowflake.style.left = `${left}%`;
+                    snowflake.style.animationDuration = `${animationDuration}s`;
+                    snowflake.style.animationDelay = `${animationDelay}s`;
+                    
+                    snowContainer.appendChild(snowflake);
                 }
-                100% {
-                    transform: translateY(-100vh) rotate(360deg);
+            }
+
+            // Гамбургер-меню
+            const menuToggle = document.getElementById('menuToggle');
+            const sideMenu = document.getElementById('sideMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const menuButtons = document.querySelectorAll('.menu-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // Открытие/закрытие меню
+            function toggleMenu() {
+                menuToggle.classList.toggle('active');
+                sideMenu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                
+                // Блокировка скролла при открытом меню
+                document.body.style.overflow = sideMenu.classList.contains('active') ? 'hidden' : '';
+            }
+
+            menuToggle.addEventListener('click', toggleMenu);
+
+            // Закрытие меню по клику на оверлей
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            // Навигация по вкладкам
+            menuButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Убираем активный класс у всех кнопок и вкладок
+                    menuButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Добавляем активный класс текущей кнопке и вкладке
+                    button.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Закрываем меню после выбора
+                    toggleMenu();
+                });
+            });
+
+            // Плавное появление features при скролле
+            const featuresSection = document.getElementById('features');
+            const featuresBtn = document.getElementById('featuresBtn');
+            const statsScrollBtn = document.getElementById('statsScrollBtn');
+            const statsSection = document.getElementById('statsSection');
+
+            function checkScroll() {
+                if (!featuresSection) return;
+                
+                const sectionPos = featuresSection.getBoundingClientRect().top;
+                const screenPos = window.innerHeight / 1.3;
+
+                if (sectionPos < screenPos) {
+                    featuresSection.classList.add('show');
+                }
+            }
+
+            // Показать features при клике на кнопку
+            if (featuresBtn) {
+                featuresBtn.addEventListener('click', function() {
+                    featuresSection.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    
+                    setTimeout(() => {
+                        featuresSection.classList.add('show');
+                    }, 500);
+                });
+            }
+
+            // Прокрутка к статистике
+            if (statsScrollBtn) {
+                statsScrollBtn.addEventListener('click', function() {
+                    statsSection.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                });
+            }
+
+            // Проверять скролл при загрузке и скролле
+            window.addEventListener('scroll', checkScroll);
+            window.addEventListener('load', checkScroll);
+
+            // Добавляем случайные неоновые вспышки
+            function createFlash() {
+                const flash = document.createElement('div');
+                flash.style.cssText = `
+                    position: fixed;
+                    width: 100px;
+                    height: 100px;
+                    background: radial-gradient(circle, var(--neon-blue), transparent);
+                    border-radius: 50%;
+                    pointer-events: none;
                     opacity: 0;
-                }
+                    animation: flash 2s ease-out;
+                    z-index: 0;
+                `;
+                
+                flash.style.left = Math.random() * 100 + 'vw';
+                flash.style.top = Math.random() * 100 + 'vh';
+                
+                document.body.appendChild(flash);
+                
+                setTimeout(() => {
+                    if (flash.parentNode) {
+                        flash.remove();
+                    }
+                }, 2000);
             }
-        `;
-        document.head.appendChild(style);
 
-        // Создаем снежинки при загрузке
-        window.addEventListener('load', createSnowflakes);
+            // Создаем вспышки каждые 5 секунд (увеличено для производительности)
+            setInterval(createFlash, 5000);
+
+            // Новогодние эффекты
+            function createChristmasEffect() {
+                const effects = ['🎄', '🎁', '⭐', '🔴', '🟢'];
+                const effect = document.createElement('div');
+                effect.textContent = effects[Math.floor(Math.random() * effects.length)];
+                effect.style.cssText = `
+                    position: fixed;
+                    font-size: ${Math.random() * 20 + 10}px;
+                    pointer-events: none;
+                    z-index: 1;
+                    opacity: 0;
+                    animation: christmasFloat 5s ease-in forwards;
+                `;
+                
+                effect.style.left = Math.random() * 100 + 'vw';
+                effect.style.top = '100vh';
+                
+                document.body.appendChild(effect);
+                
+                setTimeout(() => {
+                    if (effect.parentNode) {
+                        effect.remove();
+                    }
+                }, 5000);
+            }
+
+            // Создаем новогодние эффекты каждые 3 секунды (увеличено для производительности)
+            setInterval(createChristmasEffect, 3000);
+
+            // Добавляем CSS для анимации новогодних эффектов
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes christmasFloat {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 0.8;
+                    }
+                    100% {
+                        transform: translateY(-100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Создаем снежинки при загрузке
+            createSnowflakes();
+        });
     </script>
 </body>
 </html>
