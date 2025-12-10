@@ -2,135 +2,169 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="People Search - мощный Telegram бот для поиска людей">
-    <title>People Search - Найди своего мамонта!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="People Search - профессиональный инструмент для поиска">
+    <title>People Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS оптимизации */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border: rgba(148, 163, 184, 0.2);
             --neon-blue: #00f3ff;
             --neon-purple: #b967ff;
             --neon-green: #00ff88;
-            --christmas-red: #ff4d4d;
-            --christmas-green: #4dff88;
-            --christmas-gold: #ffd700;
-            --dark-bg: #0a0a1a;
-            --darker-bg: #050510;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --radius: 16px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
         }
 
         body {
-            background: var(--darker-bg);
-            font-family: 'Rajdhani', sans-serif;
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, #1e1b4b 100%);
+            color: var(--light);
+            line-height: 1.5;
             min-height: 100vh;
             overflow-x: hidden;
-            font-size: 18px;
-            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Улучшенное гамбургер-меню */
-        .menu-toggle {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            z-index: 1001;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            padding: 0;
-        }
-
-        .menu-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .menu-toggle span {
-            display: block;
-            width: 24px;
-            height: 3px;
-            background: white;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle.active {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
-        }
-
-        /* Боковое меню */
-        .side-menu {
+        /* Анимированный фон */
+        .bg-animation {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 300px;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(10, 10, 26, 0.95) 0%, rgba(5, 5, 16, 0.98) 100%);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid var(--border);
-            z-index: 1000;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            padding: 100px 25px 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            will-change: transform;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+            opacity: 0.3;
         }
 
-        .side-menu.active {
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary), transparent);
+            animation: floatParticle 20s infinite linear;
+        }
+
+        /* Основной контейнер */
+        .container {
+            max-width: 100%;
+            padding: 0 20px;
+            margin: 0 auto;
+        }
+
+        /* Навигация */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
             right: 0;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+            z-index: 1000;
+            padding: 15px 20px;
+            animation: slideDown 0.5s ease-out;
         }
 
-        /* Кнопки меню */
-        .menu-btn {
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             position: relative;
-            padding: 18px 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            text-align: left;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            animation: glowPulse 4s infinite;
         }
 
-        .menu-btn::before {
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 10px var(--primary); }
+            50% { text-shadow: 0 0 20px var(--primary), 0 0 30px var(--primary); }
+        }
+
+        .logo i {
+            color: var(--neon-blue);
+            animation: spinSlow 10s infinite linear;
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .nav-toggle {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            color: var(--light);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow);
+            animation: pulseButton 3s infinite;
+        }
+
+        @keyframes pulseButton {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); }
+        }
+
+        .nav-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .nav-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .nav-toggle::before {
             content: '';
             position: absolute;
             top: 0;
@@ -141,106 +175,891 @@
             transition: 0.5s;
         }
 
-        .menu-btn:hover::before {
+        .nav-toggle:hover::before {
             left: 100%;
         }
 
-        .menu-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        /* Боковое меню */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 320px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.98));
+            backdrop-filter: blur(20px);
+            z-index: 1001;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 100px 25px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-left: 1px solid rgba(99, 102, 241, 0.3);
         }
 
-        .menu-btn.active {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.5);
+        .side-menu.active {
+            right: 0;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .menu-btn.active:hover {
-            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
-            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.7);
+        @keyframes slideIn {
+            from {
+                right: -100%;
+                opacity: 0;
+            }
+            to {
+                right: 0;
+                opacity: 1;
+            }
         }
 
-        /* Иконки для кнопок */
-        .menu-btn::after {
-            content: '';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.3em;
-            transition: transform 0.3s ease;
-        }
-
-        .menu-btn[data-tab="home"]::after {
-            content: '🏠';
-        }
-
-        .menu-btn[data-tab="support"]::after {
-            content: '💎';
-        }
-
-        .menu-btn:hover::after {
-            transform: translateY(-50%) scale(1.2);
-        }
-
-        /* Оверлей для меню */
         .menu-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .menu-overlay.active {
             opacity: 1;
             visibility: visible;
-        }
-
-        /* Вкладки */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .tab-content.active {
-            display: block;
+            animation: fadeIn 0.3s;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* Анимированный фон */
-        .bg-animation {
-            position: fixed;
+        .menu-item {
+            padding: 18px 25px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius);
+            color: var(--light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.1s; }
+        .menu-item:nth-child(2) { animation-delay: 0.2s; }
+        .menu-item:nth-child(3) { animation-delay: 0.3s; }
+        .menu-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
             top: 0;
-            left: 0;
+            left: -100%;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
         }
 
-        .star {
+        .menu-item:hover {
+            transform: translateX(10px) translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
+        }
+
+        .menu-item:active {
+            transform: translateX(5px) translateY(-2px);
+        }
+
+        .menu-item i {
+            font-size: 1.3rem;
+            color: var(--neon-blue);
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover i {
+            transform: scale(1.2) rotate(10deg);
+            color: var(--neon-purple);
+        }
+
+        /* Основной контент */
+        .main-content {
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+
+        /* Герой-секция */
+        .hero {
+            text-align: center;
+            padding: 40px 0 80px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero-icon-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-icon {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+            z-index: 1;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: var(--shadow-glow);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .hero-icon::before {
+            content: '';
             position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 5s infinite;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--neon-blue));
+            border-radius: 40px;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(20px);
+            animation: pulseGlow 2s ease-in-out infinite alternate;
         }
 
-        .star:nth-child(1) { top: 10%; left: 20%; width: 2px; height: 2px; animation-delay: 0s; }
-        .star:nth-child(2) { top: 60%; left: 80%; width: 3px; height: 3px; animation-delay: 1s; }
-        .star:nth-child(3) { top: 30%; left: 50%; width: 2px; height: 2px; animation-delay: 2s; }
-        .star:nth-child(4) { top: 80%; left: 30%; width: 3px; height: 3px; animation-delay: 3s; }
-        .star:nth-child(5) { top: 40%; left: 90%; width: 2px; height: 2px; animation-delay: 4s; }
+        @keyframes pulseGlow {
+            from { opacity: 0.3; }
+            to { opacity: 0.7; }
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s infinite alternate;
+        }
+
+        @keyframes textShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-description {
+            color: #cbd5e1;
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 50px;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        /* Кнопки с анимациями */
+        .cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-width: 280px;
+            max-width: 350px;
+            box-shadow: var(--shadow);
+            animation: buttonEntrance 0.6s ease-out;
+        }
+
+        @keyframes buttonEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: var(--shadow-lg), 0 0 40px rgba(99, 102, 241, 0.6);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .cta-button.telegram {
+            background: linear-gradient(135deg, #0088cc, #00aced);
+            animation-delay: 0.7s;
+        }
+
+        .cta-button.telegram:hover {
+            box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 136, 204, 0.6);
+        }
+
+        /* Карточки с анимациями */
+        .card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: cardAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--neon-blue));
+            border-radius: calc(var(--radius) + 2px);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            animation: iconFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-description {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        /* Статистика */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius);
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            animation: statPopIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes statPopIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.5s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .stat-item:hover::before {
+            left: 100%;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .stat-value::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Прогресс бар с анимацией */
+        .progress-container {
+            margin: 30px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #cbd5e1;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--neon-blue));
+            border-radius: 6px;
+            width: 0;
+            position: relative;
+            transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: progressGlow 2s infinite alternate;
+        }
+
+        @keyframes progressGlow {
+            from { box-shadow: 0 0 10px var(--primary); }
+            to { box-shadow: 0 0 20px var(--primary); }
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Секции */
+        .section {
+            margin: 80px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            animation: titleSlideIn 0.6s ease-out;
+        }
+
+        @keyframes titleSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section-title i {
+            color: var(--neon-blue);
+            font-size: 2.5rem;
+            animation: iconSpin 4s linear infinite;
+        }
+
+        @keyframes iconSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Список функций с анимациями */
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 25px;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            transition: all 0.4s;
+            animation: slideInRight 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feature-list li:nth-child(1) { animation-delay: 0.1s; }
+        .feature-list li:nth-child(2) { animation-delay: 0.2s; }
+        .feature-list li:nth-child(3) { animation-delay: 0.3s; }
+        .feature-list li:nth-child(4) { animation-delay: 0.4s; }
+
+        .feature-list li:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            transform: translateX(10px);
+            border-radius: var(--radius);
+        }
+
+        .feature-list i {
+            color: var(--success);
+            font-size: 1.8rem;
+            margin-top: 5px;
+            transition: all 0.3s;
+        }
+
+        .feature-list li:hover i {
+            transform: scale(1.3) rotate(15deg);
+            color: var(--neon-green);
+        }
+
+        /* Футер */
+        .footer {
+            margin-top: 100px;
+            padding-top: 60px;
+            border-top: 1px solid rgba(99, 102, 241, 0.3);
+            text-align: center;
+            position: relative;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            border-radius: 2px;
+        }
+
+        .footer-text {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 40px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .social-link {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            animation: socialPopIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes socialPopIn {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .social-link:nth-child(1) { animation-delay: 0.1s; }
+        .social-link:nth-child(2) { animation-delay: 0.2s; }
+        .social-link:nth-child(3) { animation-delay: 0.3s; }
+
+        .social-link:hover {
+            transform: translateY(-10px) scale(1.1);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .social-link:active {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        /* Анимация частиц */
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Медиа запросы для планшетов */
+        @media (min-width: 768px) {
+            .container {
+                padding: 0 40px;
+                max-width: 720px;
+            }
+            
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 30px;
+            }
+            
+            .cta-group {
+                flex-direction: row;
+                justify-content: center;
+                gap: 30px;
+            }
+            
+            .cta-button {
+                min-width: 220px;
+            }
+        }
+
+        /* Десктоп */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .nav-toggle {
+                display: none;
+            }
+            
+            .side-menu {
+                position: static;
+                width: auto;
+                height: auto;
+                background: none;
+                border: none;
+                padding: 0;
+                flex-direction: row;
+                gap: 20px;
+                right: 0;
+                animation: none;
+            }
+            
+            .menu-item {
+                background: transparent;
+                border: 1px solid transparent;
+                padding: 10px 20px;
+            }
+            
+            .menu-item:hover {
+                background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+                border-color: rgba(99, 102, 241, 0.3);
+            }
+            
+            .menu-overlay {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 4rem;
+            }
+        }
+
+        /* Улучшения для очень маленьких экранов */
+        @media (max-width: 360px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-button {
+                min-width: 250px;
+                padding: 18px 30px;
+            }
+        }
+
+        /* Анимация появления при скролле */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Анимация для мамонта */
+        .mammoth-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        .mammoth {
+            font-size: 6rem;
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+            animation: mammothFloat 4s ease-in-out infinite, mammothGlow 2s infinite alternate;
+            display: block;
+        }
+
+        @keyframes mammothFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes mammothGlow {
+            from { filter: drop-shadow(0 0 10px var(--neon-blue)); }
+            to { filter: drop-shadow(0 0 20px var(--neon-purple)); }
+        }
+
+        .pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid var(--neon-blue);
+            border-radius: 50%;
+            animation: pulseRing 3s ease-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulseRing {
+            0% { 
+                width: 100px; 
+                height: 100px; 
+                opacity: 1; 
+            }
+            100% { 
+                width: 300px; 
+                height: 300px; 
+                opacity: 0; 
+            }
+        }
 
         /* Снежинки */
         .snowflake {
@@ -260,894 +1079,600 @@
             100% { transform: translateY(100vh) translateX(20px) rotate(360deg); }
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 50px 0;
-            position: relative;
-        }
-
-        .header::before {
-            content: "🎄";
-            position: absolute;
-            left: 20%;
-            top: 20px;
-            font-size: 2.5em;
-            animation: swing 3s ease-in-out infinite;
-        }
-
-        .header::after {
-            content: "🎁";
-            position: absolute;
-            right: 20%;
-            top: 20px;
-            font-size: 2.5em;
-            animation: swing 3s ease-in-out infinite reverse;
-        }
-
-        @keyframes swing {
-            0%, 100% { transform: rotate(-10deg); }
-            50% { transform: rotate(10deg); }
-        }
-
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.5em, 8vw, 5em);
-            font-weight: 900;
-            background: linear-gradient(45deg, var(--neon-blue), var(--christmas-green));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .logo span {
-            background: linear-gradient(45deg, var(--christmas-red), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .tagline {
-            font-size: clamp(1.2em, 4vw, 1.5em);
-            opacity: 0.8;
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        /* Main Content */
-        .main-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 70px 0;
-        }
-
-        .mammoth-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 40px;
-        }
-
-        .mammoth {
-            font-size: clamp(4em, 15vw, 10em);
-            filter: drop-shadow(0 0 20px var(--neon-blue));
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .santa-hat {
-            position: absolute;
-            top: -30px;
-            right: 20px;
-            font-size: clamp(1.5em, 5vw, 2.5em);
-            animation: hatBounce 2s ease-in-out infinite;
-        }
-
-        @keyframes hatBounce {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(10deg); }
-        }
-
-        .pulse {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 250px;
-            height: 250px;
-            border: 2px solid var(--christmas-red);
-            border-radius: 50%;
-            animation: pulse 2s ease-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes pulse {
-            0% { 
-                width: 150px; 
-                height: 150px; 
-                opacity: 1; 
-            }
-            100% { 
-                width: 350px; 
-                height: 350px; 
-                opacity: 0; 
-            }
-        }
-
-        .hero-title {
-            font-size: clamp(2em, 6vw, 3.5em);
-            margin-bottom: 30px;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .neon-text {
-            background: linear-gradient(45deg, var(--christmas-red), var(--christmas-green));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px var(--christmas-red);
-        }
-
-        .hero-description {
-            font-size: clamp(1.2em, 3vw, 1.6em);
-            max-width: 700px;
-            margin: 0 auto 50px;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        /* Кнопки */
-        .cta-buttons {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .neon-btn {
-            padding: 20px 40px;
-            font-size: clamp(1em, 3vw, 1.3em);
-            font-weight: 600;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
+        /* Предотвращение сдвига контента */
+        body.menu-open {
             overflow: hidden;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            font-family: 'Rajdhani', sans-serif;
-            min-width: 200px;
-        }
-
-        .telegram-btn {
-            background: linear-gradient(45deg, #0088cc, #00aced);
-            color: white;
-            box-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
-        }
-
-        .telegram-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(0, 136, 204, 0.8);
-        }
-
-        .features-btn {
-            background: transparent;
-            color: var(--neon-purple);
-            border: 2px solid var(--neon-purple);
-            box-shadow: 0 0 20px rgba(185, 103, 255, 0.5);
-        }
-
-        .features-btn:hover {
-            background: var(--neon-purple);
-            color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(185, 103, 255, 0.8);
-        }
-
-        .stats-btn {
-            background: transparent;
-            color: var(--christmas-gold);
-            border: 2px solid var(--christmas-gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        .stats-btn:hover {
-            background: var(--christmas-gold);
-            color: var(--darker-bg);
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-        }
-
-        /* Features */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin: 100px 0;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s ease;
-        }
-
-        .features.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: 0.5s;
-        }
-
-        .feature-card:hover::before {
-            left: 100%;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--neon-blue);
-            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
-        }
-
-        .feature-icon {
-            font-size: clamp(2.5em, 8vw, 4em);
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 10px var(--neon-blue));
-        }
-
-        .feature-card h3 {
-            font-size: clamp(1.4em, 4vw, 1.8em);
-            margin-bottom: 15px;
-            color: var(--neon-blue);
-        }
-
-        /* How it works */
-        .how-it-works {
-            margin: 100px 0;
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: clamp(2em, 6vw, 3em);
-            margin-bottom: 60px;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-        }
-
-        .step {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px 25px;
-            position: relative;
-        }
-
-        .step-number {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(45deg, var(--christmas-red), var(--christmas-green));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8em;
-            font-weight: bold;
-            margin: 0 auto 20px;
-            box-shadow: 0 0 20px var(--christmas-red);
-        }
-
-        /* Статистика */
-        .stats-section {
-            margin: 100px 0;
-            text-align: center;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-top: 50px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px 25px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--neon-blue);
-            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
-        }
-
-        .stat-value {
-            font-size: clamp(2.5em, 6vw, 3.5em);
-            font-weight: bold;
-            background: linear-gradient(45deg, var(--neon-blue), var(--christmas-green));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-        }
-
-        .stat-label {
-            font-size: clamp(1.1em, 3vw, 1.4em);
-            opacity: 0.9;
-        }
-
-        .seasonal-stats {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 40px;
-            margin-top: 50px;
-            border: 1px solid var(--christmas-red);
-            text-align: center;
-        }
-
-        .seasonal-stats h3 {
-            color: var(--christmas-gold);
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            margin-top: 25px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--christmas-red), var(--christmas-green));
-            border-radius: 15px;
-            animation: progressFill 2s ease-out;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: "75%";
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            font-size: 0.9em;
-        }
-
-        @keyframes progressFill {
-            from { width: 0%; }
-            to { width: 75%; }
-        }
-
-        /* Поддержка */
-        .support-content {
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .support-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            padding: 50px;
-            margin: 40px 0;
-            text-align: left;
-        }
-
-        .support-card h3 {
-            color: var(--neon-blue);
-            font-size: 2em;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .support-list {
-            list-style: none;
-            font-size: 1.3em;
-            line-height: 1.8;
-        }
-
-        .support-list li {
-            margin-bottom: 20px;
-            padding-left: 40px;
-            position: relative;
-        }
-
-        .support-list li::before {
-            content: "🎯";
-            position: absolute;
-            left: 0;
-            top: 0;
-            font-size: 1.2em;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 50px 0;
-            border-top: 1px solid var(--border);
-            margin-top: 80px;
-            position: relative;
-        }
-
-        .footer::before {
-            content: "🎅";
-            position: absolute;
-            left: 10%;
-            bottom: 30px;
-            font-size: 2.5em;
-            animation: swing 4s ease-in-out infinite;
-        }
-
-        .footer::after {
-            content: "🦌";
-            position: absolute;
-            right: 10%;
-            bottom: 30px;
-            font-size: 2.5em;
-            animation: swing 4s ease-in-out infinite reverse;
-        }
-
-        .footer-text {
-            opacity: 0.7;
-            margin-bottom: 25px;
-            font-size: 1.2em;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-
-        .social-link {
-            color: var(--neon-blue);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1.2em;
-        }
-
-        .social-link:hover {
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .neon-btn {
-                width: 100%;
-                max-width: 350px;
-            }
-            
-            .header::before, .header::after {
-                display: none;
-            }
-            
-            .footer::before, .footer::after {
-                display: none;
-            }
-            
-            .side-menu {
-                width: 280px;
-            }
-            
-            .support-card {
-                padding: 30px 20px;
-            }
-            
-            .support-list {
-                font-size: 1.1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .hero {
-                padding: 40px 0;
-            }
-            
-            .feature-card, .step, .stat-card {
-                padding: 25px 15px;
-            }
-            
-            .steps, .stats-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .menu-toggle {
-                top: 15px;
-                right: 15px;
-                width: 45px;
-                height: 45px;
-            }
-        }
-
-        @keyframes flash {
-            0% { opacity: 0; transform: scale(0); }
-            50% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0); }
         }
     </style>
 </head>
 <body>
-    <!-- Гамбургер-меню -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
+    <!-- Анимированный фон с частицами -->
+    <div class="bg-animation" id="bgAnimation"></div>
 
-    <!-- Боковое меню -->
-    <nav class="side-menu" id="sideMenu" aria-label="Основная навигация">
-        <button class="menu-btn active" data-tab="home">Главная</button>
-        <button class="menu-btn" data-tab="support">Поддержка проекта</button>
+    <!-- Навигация -->
+    <nav class="nav-header">
+        <div class="container nav-content">
+            <a href="#" class="logo">
+                <i class="fas fa-search"></i>
+                PeopleSearch
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Открыть меню">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="side-menu" id="sideMenu">
+                <a href="#home" class="menu-item" data-tab="home">
+                    <i class="fas fa-home"></i>
+                    Главная
+                </a>
+                <a href="#features" class="menu-item" data-tab="features">
+                    <i class="fas fa-star"></i>
+                    Возможности
+                </a>
+                <a href="#stats" class="menu-item" data-tab="stats">
+                    <i class="fas fa-chart-bar"></i>
+                    Статистика
+                </a>
+                <a href="#support" class="menu-item" data-tab="support">
+                    <i class="fas fa-life-ring"></i>
+                    Поддержка
+                </a>
+            </div>
+        </div>
     </nav>
 
-    <!-- Оверлей для меню -->
     <div class="menu-overlay" id="menuOverlay"></div>
 
-    <div class="container">
-        <!-- Анимированный фон -->
-        <div class="bg-animation" aria-hidden="true">
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-        </div>
-
-        <header class="header">
-            <h1 class="logo">People<span>Search</span></h1>
-            <p class="tagline">Бот для поиска мамонтов 🦣</p>
-        </header>
-
-        <main class="main-content">
-            <!-- Главная страница -->
-            <section class="tab-content active" id="home">
+    <!-- Основной контент -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Главная -->
+            <section id="home" class="tab-content active">
                 <div class="hero">
                     <div class="mammoth-container">
                         <div class="mammoth" aria-label="Мамонт">🦣</div>
                         <div class="pulse" aria-hidden="true"></div>
-                        <div class="santa-hat" aria-hidden="true">🎅</div>
                     </div>
                     
-                    <h2 class="hero-title">
-                        Найди своего <span class="neon-text">мамонта!</span>
-                    </h2>
+                    <h1 class="hero-title">
+                        Найди своего <span style="color: var(--neon-green);">мамонта!</span>
+                    </h1>
                     
                     <p class="hero-description">
                         People Search - это мощный Telegram бот, который поможет тебе найти 
-                        нужного мамонта, обмануть его и заработать💸
+                        нужного мамонта, обмануть его и заработать 💸
                     </p>
-
-                    <div class="cta-buttons">
-                        <a href="https://t.me/Jdyjdhhdbddhhdbot" class="neon-btn telegram-btn">
-                            <span>🚀 Запустить бота</span>
+                    
+                    <div class="cta-group">
+                        <a href="https://t.me/Jdyjdhhdbddhhdbot" class="cta-button telegram">
+                            <i class="fab fa-telegram"></i>
+                            🚀 Запустить бота
                         </a>
-                        <button class="neon-btn features-btn" id="featuresBtn">
-                            <span>✨ Возможности</span>
-                        </button>
-                        <button class="neon-btn stats-btn" id="statsScrollBtn">
-                            <span>📊 Статистика</span>
-                        </button>
+                        <a href="#features" class="cta-button secondary" id="featuresBtn">
+                            <i class="fas fa-magic"></i>
+                            ✨ Возможности
+                        </a>
+                        <a href="#stats" class="cta-button" id="statsScrollBtn">
+                            <i class="fas fa-chart-line"></i>
+                            📊 Статистика
+                        </a>
                     </div>
                 </div>
+                
+                <div class="card animate-on-scroll">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title">Как это работает</h3>
+                            <p class="card-description">Быстро, просто, эффективно</p>
+                        </div>
+                    </div>
+                    
+                    <ol style="padding-left: 20px; margin: 0; color: #94a3b8; font-size: 1.1rem;">
+                        <li style="margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid rgba(99, 102, 241, 0.2);">
+                            <strong style="color: var(--neon-blue);">1.</strong> Запускаешь бота в Telegram
+                        </li>
+                        <li style="margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid rgba(99, 102, 241, 0.2);">
+                            <strong style="color: var(--neon-blue);">2.</strong> Вводишь данные для поиска
+                        </li>
+                        <li style="margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid rgba(99, 102, 241, 0.2);">
+                            <strong style="color: var(--neon-blue);">3.</strong> Получаешь точные Юзернеймы
+                        </li>
+                        <li style="padding: 10px 0;">
+                            <strong style="color: var(--neon-blue);">4.</strong> Пишешь им. И обманываешь на гифты. Обманул = он🦣🦣🦣
+                        </li>
+                    </ol>
+                </div>
 
-                <section class="features" id="features">
-                    <div class="feature-card">
-                        <div class="feature-icon">🔍</div>
-                        <h3>Глубокий поиск</h3>
-                        <p>Находи людей по различным параметрам и критериям</p>
-                    </div>
+                <!-- Возможности -->
+                <section id="features" class="tab-content section animate-on-scroll" style="display: none;">
+                    <h2 class="section-title">
+                        <i class="fas fa-sliders-h"></i>
+                        Возможности
+                    </h2>
                     
-                    <div class="feature-card">
-                        <div class="feature-icon">🕵️</div>
-                        <h3>Анонимность</h3>
-                        <p>Твои поиски остаются полностью конфиденциальными</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h3>Мгновенные результаты</h3>
-                        <p>Находит людей за считаные секунды</p>
+                    <div class="features-grid" style="display: grid; gap: 30px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                        <div class="card" style="animation-delay: 0.1s;">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Глубокий поиск</h3>
+                                    <p class="card-description">Находи людей по различным параметрам</p>
+                                </div>
+                            </div>
+                            <p style="color: #94a3b8; line-height: 1.6;">
+                                Расширенные алгоритмы поиска по множеству критериев и параметров
+                            </p>
+                        </div>
+                        
+                        <div class="card" style="animation-delay: 0.2s;">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-user-secret"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Анонимность</h3>
+                                    <p class="card-description">Полная конфиденциальность</p>
+                                </div>
+                            </div>
+                            <p style="color: #94a3b8; line-height: 1.6;">
+                                Твои поиски остаются полностью анонимными и защищенными
+                            </p>
+                        </div>
+                        
+                        <div class="card" style="animation-delay: 0.3s;">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Мгновенно</h3>
+                                    <p class="card-description">Результаты за секунды</p>
+                                </div>
+                            </div>
+                            <p style="color: #94a3b8; line-height: 1.6;">
+                                Быстрая обработка запросов и моментальная выдача результатов
+                            </p>
+                        </div>
                     </div>
                 </section>
 
-                <section class="how-it-works">
-                    <h2 class="section-title">Как это работает?</h2>
-                    <div class="steps">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <p>Запускаешь бота в Telegram</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <p>Вводишь данные для поиска</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <p>Получаешь точные Юзернеймы</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">4</div>
-                            <p>Пишешь им. И обманываешь на гифты. Обманул = он🦣🦣🦣</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Секция статистики -->
-                <section class="stats-section" id="statsSection">
-                    <h2 class="section-title">📊 Наша статистика</h2>
-                    <div class="stats-container">
-                        <div class="stat-card">
-                            <div class="stat-value">18.410</div>
+                <!-- Статистика -->
+                <section id="stats" class="tab-content section animate-on-scroll" style="display: none;">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Статистика
+                    </h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">18,410</div>
                             <div class="stat-label">Найдено мамонтов</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value">1,892</div>
-                            <div class="stat-label">Выполнено поисков</div>
-                        </div>
-                        <div class="stat-card">
+                        <div class="stat-item">
                             <div class="stat-value">97.6%</div>
                             <div class="stat-label">Успешных поисков</div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-item">
                             <div class="stat-value">24/7</div>
                             <div class="stat-label">Работаем без выходных</div>
                         </div>
-                    </div>
-                    <div class="seasonal-stats">
-                        <h3>🎅 Сезонная статистика</h3>
-                        <p>Скоро...</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
+                        <div class="stat-item">
+                            <div class="stat-value">1,892</div>
+                            <div class="stat-label">Выполнено поисков</div>
                         </div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 50px;">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-christmas-tree"></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title">Сезонная статистика</h3>
+                                <p class="card-description">🎅 Новогодний прогресс</p>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Прогресс декабря</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                        
+                        <p style="color: #94a3b8; margin-top: 20px; text-align: center; font-style: italic;">
+                            Скоро...
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Поддержка -->
+                <section id="support" class="tab-content section animate-on-scroll" style="display: none;">
+                    <h2 class="section-title">
+                        <i class="fas fa-headset"></i>
+                        Поддержка проекта
+                    </h2>
+                    
+                    <div class="card" style="margin-bottom: 40px;">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title">Способы поддержки</h3>
+                                <p class="card-description">Ваша помощь важна для развития</p>
+                            </div>
+                        </div>
+                        
+                        <ul class="feature-list">
+                            <li>
+                                <i class="fas fa-donate"></i>
+                                <div>
+                                    <strong>Финансовая поддержка</strong>
+                                    <p style="color: #94a3b8; margin-top: 5px;">
+                                        Помогите покрыть расходы на сервера и разработку
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-lightbulb"></i>
+                                <div>
+                                    <strong>Идеи и предложения</strong>
+                                    <p style="color: #94a3b8; margin-top: 5px;">
+                                        Расскажите, какие функции хотели бы видеть в боте
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-share-alt"></i>
+                                <div>
+                                    <strong>Распространение</strong>
+                                    <p style="color: #94a3b8; margin-top: 5px;">
+                                        Поделитесь информацией о боте с друзьями
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-comment-dots"></i>
+                                <div>
+                                    <strong>Обратная связь</strong>
+                                    <p style="color: #94a3b8; margin-top: 5px;">
+                                        Сообщайте об ошибках и помогайте улучшать бота
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-address-book"></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title">Контакты для связи</h3>
+                                <p class="card-description">Свяжитесь с нами любым способом</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                            <div style="background: rgba(99, 102, 241, 0.1); padding: 20px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.2);">
+                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                                    <i class="fas fa-crown" style="color: var(--warning); font-size: 1.5rem;"></i>
+                                    <div>
+                                        <strong style="color: var(--light);">Владелец</strong>
+                                        <p style="color: #94a3b8; margin-top: 5px;">@bustex</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(99, 102, 241, 0.1); padding: 20px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.2);">
+                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                                    <i class="fas fa-comments" style="color: var(--success); font-size: 1.5rem;"></i>
+                                    <div>
+                                        <strong style="color: var(--light);">Поддержка</strong>
+                                        <p style="color: #94a3b8; margin-top: 5px;">@bustex</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-group" style="margin-top: 50px;">
+                        <a href="https://t.me/bustex" class="cta-button telegram">
+                            <i class="fab fa-telegram"></i>
+                            💬 Написать в поддержку
+                        </a>
+                        <a href="#" class="cta-button secondary">
+                            <i class="fas fa-gift"></i>
+                            💳 Поддержать проект
+                        </a>
                     </div>
                 </section>
             </section>
+        </div>
+    </main>
 
-            <!-- Поддержка проекта -->
-            <section class="tab-content" id="support">
-                <div class="hero">
-                    <h2 class="hero-title">
-                        Поддержка <span class="neon-text">проекта</span>
-                    </h2>
-                    
-                    <p class="hero-description">
-                        Ваша поддержка помогает нам развивать бота и добавлять новые функции!
-                    </p>
-                </div>
-
-                <div class="support-content">
-                    <div class="support-card">
-                        <h3>Способы поддержки</h3>
-                        <ul class="support-list">
-                            <li><strong>Финансовая поддержка:</strong> Помогите покрыть расходы на сервера и разработку</li>
-                            <li><strong>Идеи и предложения:</strong> Расскажите, какие функции хотели бы видеть в боте</li>
-                            <li><strong>Распространение:</strong> Поделитесь информацией о боте с друзьями</li>
-                            <li><strong>Обратная связь:</strong> Сообщайте об ошибках и помогайте улучшать бота</li>
-                        </ul>
-                    </div>
-
-                    <div class="support-card">
-                        <h3>Контакты для связи</h3>
-                        <ul class="support-list">
-                            <li><strong>Telegram владельца:</strong> @bustex</li>
-                            <li><strong>Поддержка:</strong> @bustex</li>
-                        </ul>
-                    </div>
-
-                    <div class="cta-buttons">
-                        <a href="https://t.me/bustex" class="neon-btn telegram-btn">
-                            <span>💬 Написать в поддержку</span>
-                        </a>
-                        <a href="#" class="neon-btn features-btn">
-                            <span>💳 Поддержать проект</span>
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="footer">
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
             <p class="footer-text">
-                &copy; 2025 People Search Bot. Находи мамонтов и зарабатывай!
+                &copy; 2025 People Search Bot. Находи мамонтов и зарабатывай! 🦣
             </p>
+            
             <div class="social-links">
-                <a href="#" class="social-link">📢 Канал</a>
-                <a href="#" class="social-link">💬 Поддержка</a>
-                <a href="#" class="social-link">📚 FAQ</a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-telegram"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fas fa-bell"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fas fa-question-circle"></i>
+                </a>
             </div>
-        </footer>
-    </div>
+        </div>
+    </footer>
 
     <script>
-        // Оптимизированный JavaScript
         document.addEventListener('DOMContentLoaded', function() {
-            // Создаем снежинки
-            function createSnowflakes() {
-                const snowContainer = document.querySelector('.bg-animation');
-                const snowflakesCount = 30; // Уменьшено для производительности
+            // Элементы
+            const navToggle = document.getElementById('navToggle');
+            const sideMenu = document.getElementById('sideMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const menuItems = document.querySelectorAll('.menu-item');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const body = document.body;
+            const bgAnimation = document.getElementById('bgAnimation');
+            const progressFill = document.getElementById('progressFill');
+
+            // Создание анимированных частиц фона
+            function createParticles() {
+                const colors = ['#6366f1', '#8b5cf6', '#00f3ff', '#b967ff'];
                 
-                for (let i = 0; i < snowflakesCount; i++) {
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    
+                    const size = Math.random() * 100 + 20;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const duration = Math.random() * 20 + 10;
+                    const delay = Math.random() * 5;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.background = `radial-gradient(circle, ${color}, transparent)`;
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.animationDuration = `${duration}s`;
+                    particle.style.animationDelay = `${delay}s`;
+                    particle.style.opacity = Math.random() * 0.3 + 0.1;
+                    
+                    bgAnimation.appendChild(particle);
+                }
+            }
+
+            // Создание снежинок
+            function createSnowflakes() {
+                const container = document.querySelector('.hero');
+                if (!container) return;
+                
+                for (let i = 0; i < 15; i++) {
                     const snowflake = document.createElement('div');
                     snowflake.className = 'snowflake';
                     snowflake.innerHTML = '❄';
-                    snowflake.setAttribute('aria-hidden', 'true');
                     
                     const size = Math.random() * 1.5 + 0.5;
                     const left = Math.random() * 100;
-                    const animationDuration = Math.random() * 10 + 5;
-                    const animationDelay = Math.random() * 5;
+                    const duration = Math.random() * 10 + 5;
+                    const delay = Math.random() * 5;
                     
                     snowflake.style.fontSize = `${size}em`;
                     snowflake.style.left = `${left}%`;
-                    snowflake.style.animationDuration = `${animationDuration}s`;
-                    snowflake.style.animationDelay = `${animationDelay}s`;
+                    snowflake.style.animationDuration = `${duration}s`;
+                    snowflake.style.animationDelay = `${delay}s`;
                     
-                    snowContainer.appendChild(snowflake);
+                    container.appendChild(snowflake);
                 }
             }
 
-            // Гамбургер-меню
-            const menuToggle = document.getElementById('menuToggle');
-            const sideMenu = document.getElementById('sideMenu');
-            const menuOverlay = document.getElementById('menuOverlay');
-            const menuButtons = document.querySelectorAll('.menu-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            // Открытие/закрытие меню
-            function toggleMenu() {
-                menuToggle.classList.toggle('active');
-                sideMenu.classList.toggle('active');
-                menuOverlay.classList.toggle('active');
-                
-                // Блокировка скролла при открытом меню
-                document.body.style.overflow = sideMenu.classList.contains('active') ? 'hidden' : '';
+            // Анимация прогресс-бара
+            function animateProgressBar() {
+                if (progressFill) {
+                    setTimeout(() => {
+                        progressFill.style.width = '75%';
+                    }, 500);
+                }
             }
 
-            menuToggle.addEventListener('click', toggleMenu);
+            // Функция переключения меню
+            function toggleMenu() {
+                const isActive = sideMenu.classList.contains('active');
+                sideMenu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                body.classList.toggle('menu-open', !isActive);
+                
+                // Анимация иконки меню
+                const icon = navToggle.querySelector('i');
+                icon.className = isActive ? 'fas fa-bars' : 'fas fa-times';
+                navToggle.style.animation = 'none';
+                setTimeout(() => {
+                    navToggle.style.animation = 'pulseButton 3s infinite';
+                }, 10);
+            }
 
-            // Закрытие меню по клику на оверлей
-            menuOverlay.addEventListener('click', toggleMenu);
+            // Закрытие меню
+            function closeMenu() {
+                sideMenu.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                body.classList.remove('menu-open');
+                navToggle.querySelector('i').className = 'fas fa-bars';
+            }
 
-            // Навигация по вкладкам
-            menuButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
+            // Переключение вкладок
+            function switchTab(tabId) {
+                // Скрыть все вкладки
+                tabContents.forEach(tab => {
+                    tab.style.display = 'none';
+                    tab.classList.remove('active');
+                });
+                
+                // Показать выбранную вкладку
+                const activeTab = document.getElementById(tabId);
+                if (activeTab) {
+                    activeTab.style.display = 'block';
+                    setTimeout(() => {
+                        activeTab.classList.add('active');
+                        animateElements();
+                    }, 50);
                     
-                    // Убираем активный класс у всех кнопок и вкладок
-                    menuButtons.forEach(btn => btn.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
+                    // Анимация прокрутки
+                    if (window.innerWidth < 1024) {
+                        window.scrollTo({
+                            top: 80,
+                            behavior: 'smooth'
+                        });
+                    }
                     
-                    // Добавляем активный класс текущей кнопке и вкладке
-                    button.classList.add('active');
-                    document.getElementById(tabId).classList.add('active');
+                    // Анимация кнопок
+                    animateButtons();
+                }
+                
+                closeMenu();
+            }
+
+            // Анимация кнопок
+            function animateButtons() {
+                const buttons = document.querySelectorAll('.cta-button');
+                buttons.forEach((button, index) => {
+                    button.style.animation = 'none';
+                    setTimeout(() => {
+                        button.style.animation = `buttonEntrance 0.6s ease-out ${index * 0.1}s both`;
+                    }, 50);
+                });
+            }
+
+            // Анимация элементов при скролле
+            function animateElements() {
+                const elements = document.querySelectorAll('.animate-on-scroll');
+                
+                elements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
                     
-                    // Закрываем меню после выбора
-                    toggleMenu();
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add('animated');
+                    }
+                });
+            }
+
+            // Обработчики событий
+            navToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            menuOverlay.addEventListener('click', closeMenu);
+
+            // Обработчики для пунктов меню
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabId = this.getAttribute('data-tab') || this.getAttribute('href').substring(1);
+                    switchTab(tabId);
+                    
+                    // Анимация клика
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
                 });
             });
 
-            // Плавное появление features при скролле
-            const featuresSection = document.getElementById('features');
-            const featuresBtn = document.getElementById('featuresBtn');
-            const statsScrollBtn = document.getElementById('statsScrollBtn');
-            const statsSection = document.getElementById('statsSection');
+            // Обработка кнопок на главной
+            document.getElementById('featuresBtn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('features');
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
 
-            function checkScroll() {
-                if (!featuresSection) return;
-                
-                const sectionPos = featuresSection.getBoundingClientRect().top;
-                const screenPos = window.innerHeight / 1.3;
+            document.getElementById('statsScrollBtn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                switchTab('stats');
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
 
-                if (sectionPos < screenPos) {
-                    featuresSection.classList.add('show');
+            // Анимация при скролле
+            window.addEventListener('scroll', animateElements);
+
+            // Инициализация
+            createParticles();
+            createSnowflakes();
+            animateProgressBar();
+            animateElements();
+            animateButtons();
+
+            // Обработка начального хэша
+            function handleInitialHash() {
+                const hash = window.location.hash.substring(1);
+                if (hash && ['home', 'features', 'stats', 'support'].includes(hash)) {
+                    setTimeout(() => switchTab(hash), 100);
                 }
             }
 
-            // Показать features при клике на кнопку
-            if (featuresBtn) {
-                featuresBtn.addEventListener('click', function() {
-                    featuresSection.scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                    
+            // Обновление хэша
+            function updateHash(tabId) {
+                if (history.pushState) {
+                    history.pushState(null, null, '#' + tabId);
+                } else {
+                    window.location.hash = tabId;
+                }
+            }
+
+            // Модификация switchTab для обновления хэша
+            const originalSwitchTab = switchTab;
+            switchTab = function(tabId) {
+                originalSwitchTab(tabId);
+                updateHash(tabId);
+            };
+
+            // Анимация при наведении на кнопки
+            document.querySelectorAll('.cta-button').forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.05)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Эффект "пульсации" для статистики
+            setInterval(() => {
+                const statValues = document.querySelectorAll('.stat-value');
+                statValues.forEach(value => {
+                    value.style.animation = 'none';
                     setTimeout(() => {
-                        featuresSection.classList.add('show');
-                    }, 500);
+                        value.style.animation = '';
+                    }, 10);
                 });
-            }
+            }, 3000);
 
-            // Прокрутка к статистике
-            if (statsScrollBtn) {
-                statsScrollBtn.addEventListener('click', function() {
-                    statsSection.scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                });
-            }
-
-            // Проверять скролл при загрузке и скролле
-            window.addEventListener('scroll', checkScroll);
-            window.addEventListener('load', checkScroll);
-
-            // Добавляем случайные неоновые вспышки
+            // Случайные неоновые вспышки
             function createFlash() {
                 const flash = document.createElement('div');
                 flash.style.cssText = `
@@ -1174,56 +1699,21 @@
                 }, 2000);
             }
 
-            // Создаем вспышки каждые 5 секунд (увеличено для производительности)
-            setInterval(createFlash, 5000);
-
-            // Новогодние эффекты
-            function createChristmasEffect() {
-                const effects = ['🎄', '🎁', '⭐', '🔴', '🟢'];
-                const effect = document.createElement('div');
-                effect.textContent = effects[Math.floor(Math.random() * effects.length)];
-                effect.style.cssText = `
-                    position: fixed;
-                    font-size: ${Math.random() * 20 + 10}px;
-                    pointer-events: none;
-                    z-index: 1;
-                    opacity: 0;
-                    animation: christmasFloat 5s ease-in forwards;
-                `;
-                
-                effect.style.left = Math.random() * 100 + 'vw';
-                effect.style.top = '100vh';
-                
-                document.body.appendChild(effect);
-                
-                setTimeout(() => {
-                    if (effect.parentNode) {
-                        effect.remove();
-                    }
-                }, 5000);
-            }
-
-            // Создаем новогодние эффекты каждые 3 секунды (увеличено для производительности)
-            setInterval(createChristmasEffect, 3000);
-
-            // Добавляем CSS для анимации новогодних эффектов
+            // CSS для вспышек
             const style = document.createElement('style');
             style.textContent = `
-                @keyframes christmasFloat {
-                    0% {
-                        transform: translateY(0) rotate(0deg);
-                        opacity: 0.8;
-                    }
-                    100% {
-                        transform: translateY(-100vh) rotate(360deg);
-                        opacity: 0;
-                    }
+                @keyframes flash {
+                    0% { opacity: 0; transform: scale(0); }
+                    50% { opacity: 0.3; transform: scale(1); }
+                    100% { opacity: 0; transform: scale(0); }
                 }
             `;
             document.head.appendChild(style);
 
-            // Создаем снежинки при загрузке
-            createSnowflakes();
+            // Случайные вспышки
+            setInterval(createFlash, 3000);
+
+            handleInitialHash();
         });
     </script>
 </body>
